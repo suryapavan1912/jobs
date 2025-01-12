@@ -10,6 +10,11 @@ interface IUser extends Document {
   password?: string;
   googleId?: string;
   profilePicture?: string;
+  isVerified: boolean;
+  verificationToken?: string;
+  verificationTokenExpiry?: Date;
+  otp?: string;
+  otpExpiry?: Date;
 }
 
 const userSchema = new mongoose.Schema<IUser>({
@@ -20,7 +25,9 @@ const userSchema = new mongoose.Schema<IUser>({
   },
   name: { 
     type: String, 
-    required: true 
+    required: function() {
+      return this.isVerified; // Only required after verification
+    }
   },
   email: { 
     type: String, 
@@ -29,7 +36,9 @@ const userSchema = new mongoose.Schema<IUser>({
   },
   password: { 
     type: String, 
-    required: false 
+    required: function() {
+      return this.isVerified && !this.googleId; // Required after verification unless Google auth
+    }
   },
   googleId: { 
     type: String, 
@@ -37,7 +46,15 @@ const userSchema = new mongoose.Schema<IUser>({
   },
   profilePicture: { 
     type: String 
-  }
+  },
+  isVerified: {
+    type: Boolean,
+    default: false
+  },
+  verificationToken: String,
+  verificationTokenExpiry: Date,
+  otp: String,
+  otpExpiry: Date
 }, {
   timestamps: true
 });
