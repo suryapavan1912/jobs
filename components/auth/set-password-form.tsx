@@ -88,7 +88,7 @@ export default function SetupPasswordForm({
       toast.success("Account created successfully", {
         description: "You can now login with your email and password",
       })
-      router.push('/auth/login')
+      router.push('/')
     } catch (error) {
       console.error('Setup password error:', error)
       toast.error("Failed to set password", {

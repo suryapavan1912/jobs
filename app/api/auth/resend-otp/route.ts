@@ -8,11 +8,13 @@ import nodemailer from 'nodemailer';
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
   port: Number(process.env.SMTP_PORT),
-  secure: true,
+  secure: false, // Set to false for better debugging
   auth: {
     user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASS,
   },
+  debug: true, // Enable debug logs
+  logger: true // Enable logger
 });
 
 export async function POST(request: NextRequest) {
