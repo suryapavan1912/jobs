@@ -4,6 +4,8 @@ import { connectToDatabase } from '@/utils/mongo';
 import { User } from '@/models/user';
 import crypto from 'crypto';
 import nodemailer from 'nodemailer';
+import { getEmailTemplate } from '@/utils/email';
+import { replaceTemplateVariables } from '@/utils/email';
 
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
@@ -49,16 +51,20 @@ export async function POST(request: NextRequest) {
     await user.save();
 
     // Send new verification email
-    await transporter.sendMail({
-      from: process.env.SMTP_FROM,
-      to: email,
-      subject: 'New Verification Code',
-      html: `
-        <h1>New Verification Code</h1>
-        <p>Your new verification code is: <strong>${otp}</strong></p>
-        <p>This code will expire in 30 minutes.</p>
-      `,
-    });
+    const template = await getEmailTemplate('resend-otp');
+    const emailHtml = replaceTemplateVariables(template, { otp });
+
+    try {
+      await transporter.sendMail({
+        from: process.env.SMTP_FROM || 'noreply@example.com',
+        to: email,
+        subject: 'Your New Verification Code',
+        html: emailHtml,
+      });
+    } catch (emailError) {
+      console.error('Failed to send email:', emailError);
+      throw new Error('Email sending failed');
+    }
 
     return NextResponse.json({
       message: 'New verification code sent'
