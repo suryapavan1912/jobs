@@ -1,6 +1,8 @@
 import VerifyForm from '@/components/auth/verify-form'
+import { requireNoAuth } from '@/lib/auth-utils';
 
-export default function VerifyPage() {
+export default async function VerifyPage() {
+  await requireNoAuth();
   return (
     <VerifyForm />
   )
