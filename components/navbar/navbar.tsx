@@ -5,8 +5,9 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
 import { UserCircle } from 'lucide-react';
-import SignOutButton from './sign-out-button';
-import { ThemeToggle } from './theme-toggle';
+import SignOutButton from '@/components/navbar/sign-out-button';
+import { ThemeToggle } from '@/components/navbar/theme-toggle';
+import { MobileNav } from '@/components/navbar/mobile-nav';
 
 export async function Navbar() {
   const session = await getServerSession(authOptions);
@@ -19,13 +20,19 @@ export async function Navbar() {
           <span className="font-bold text-xl">Logo</span>
         </Link>
 
-        {/* Navigation Links */}
+        {/* Desktop Navigation Links */}
         <div className="hidden md:flex items-center space-x-6">
           <Link 
-            href="/templates" 
+            href="/resume-templates" 
             className="text-sm font-medium transition-colors hover:text-primary"
           >
             Resume Templates
+          </Link>
+          <Link 
+            href="/interview-questions" 
+            className="text-sm font-medium transition-colors hover:text-primary"
+          >
+            Interview Questions
           </Link>
           <Link 
             href="/archives" 
@@ -35,9 +42,10 @@ export async function Navbar() {
           </Link>
         </div>
 
-        {/* Right section with Theme Toggle and Auth */}
-        <div className="flex items-center space-x-2">
-          
+        {/* Right section with Auth, Theme Toggle, and Mobile Menu */}
+        <div className="flex items-center space-x-4">
+          <ThemeToggle />
+          {/* Auth section */}
           {session ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -78,7 +86,10 @@ export async function Navbar() {
             </div>
           )}
 
-          <ThemeToggle />
+          {/* Mobile Menu - Only visible on mobile */}
+          <div className="md:hidden">
+            <MobileNav />
+          </div>
         </div>
       </div>
     </nav>
