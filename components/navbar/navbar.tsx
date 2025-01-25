@@ -1,7 +1,8 @@
 import React from 'react';
 import Link from 'next/link';
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import Image from 'next/image';
+import { authOptions } from '@/app/api/auth/[...nextauth]/auth';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
 import { UserCircle } from 'lucide-react';
@@ -58,7 +59,7 @@ export async function Navbar() {
                     className="relative h-9 w-9 rounded-full"
                   >
                     {session.user?.image ? (
-                      <img
+                      <Image
                         src={session.user.image}
                         alt={session.user.name || 'Profile'}
                         className="h-8 w-8 rounded-full"

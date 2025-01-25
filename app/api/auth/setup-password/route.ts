@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
       decoded = jwt.verify(token, process.env.JWT_SECRET!) as TokenPayload;
     } catch (error) {
       return NextResponse.json(
-        { message: 'Invalid or expired token' },
+        { message: 'Invalid or expired token', errorMessage: (error as Error).message },
         { status: 400 }
       );
     }
@@ -69,6 +69,7 @@ export async function POST(request: NextRequest) {
 }
 
 export async function GET(request: NextRequest) {
+  console.log('GET request received', request);
   return NextResponse.json(
     { message: 'This endpoint only supports POST requests' },
     { status: 405 }

@@ -78,10 +78,3 @@ export async function POST(request: NextRequest) {
     );
   }
 }
-
-export async function GET(request: NextRequest) {
-  return NextResponse.json(
-    { message: 'This endpoint only supports POST requests' },
-    { status: 405 }
-  );
-}

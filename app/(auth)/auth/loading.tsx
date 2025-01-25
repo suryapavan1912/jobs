@@ -1,5 +1,4 @@
 // app/auth/loading.tsx
-import { GalleryVerticalEnd } from "lucide-react"
 import { Skeleton } from "@/components/ui/skeleton"
 
 export default function AuthLoading() {

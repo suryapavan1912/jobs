@@ -117,7 +117,7 @@ export default function VerifyForm({
       <div className="flex flex-col items-center gap-2 text-center">
         <h1 className="text-2xl font-bold">Verify your email</h1>
         <p className="text-balance text-sm text-muted-foreground">
-          We've sent a verification code to {email}
+          We&apos;ve sent a verification code to {email}
         </p>
       </div>
 
@@ -142,7 +142,7 @@ export default function VerifyForm({
         </Button>
 
         <div className="text-center text-sm">
-          Didn't receive the code?{" "}
+          Didn&apos;t receive the code?{" "}
           <Button
             type="button"
             variant="link"

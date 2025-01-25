@@ -75,7 +75,7 @@ export async function POST(request: NextRequest) {
 
     // Send verification email
     try {
-      const info = await transporter.sendMail({
+      await transporter.sendMail({
         from: process.env.SMTP_FROM || 'noreply@example.com',
         to: email,
         subject: 'Verify your email',
