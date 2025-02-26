@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
     const token = jwt.sign(
       { userId: user.userId, email: user.email } as JWTPayload,
       jwtSecret,
-      { expiresIn: '1h' }
+      { expiresIn: '30d' }
     );
 
     const response = NextResponse.json(
@@ -63,7 +63,7 @@ export async function POST(request: NextRequest) {
       httpOnly: true,
       secure: process.env.NODE_ENV !== 'development',
       sameSite: 'strict',
-      maxAge: 3600,
+      maxAge: 30 * 24 * 60 * 60,
       path: '/',
     });
 
