@@ -94,8 +94,9 @@ export const authOptions: NextAuthOptions = {
         const { name, email, image } = user;
         if (!email) return false;
         
-        await connectToDatabase();
         try {
+          await connectToDatabase();
+
           let dbUser = await UserModel.findOne({ email });
           
           if (!dbUser) {
@@ -109,25 +110,12 @@ export const authOptions: NextAuthOptions = {
               isVerified: true // Google-authenticated users are automatically verified
             });
           } else {
-            // If user exists but is not verified, mark as verified
-            if (!dbUser.isVerified) {
-              dbUser.isVerified = true;
-            }
-            
-            // Update Google ID if not already set
-            if (!dbUser.googleId) {
-              dbUser.googleId = user.id;
-            }
-            
-            // Update profile picture if not already set
-            if (!dbUser.profilePicture && image) {
-              dbUser.profilePicture = image;
-            }
-            
-            // Ensure userId is set
-            if (!dbUser.userId) {
-              dbUser.userId = "u" + generateUniqueCustomId();
-            }
+
+            if (!dbUser.userId) dbUser.userId = "u" + generateUniqueCustomId();
+            if(!dbUser.name) dbUser.name = name;
+            if (!dbUser.googleId) dbUser.googleId = user.id;
+            if (!dbUser.profilePicture && image) dbUser.profilePicture = image;
+            if (!dbUser.isVerified) dbUser.isVerified = true;
             
             await dbUser.save();
           }
@@ -156,6 +144,7 @@ export const authOptions: NextAuthOptions = {
   },
   pages: {
     signIn: '/auth/login',
+    error: '/auth/error',
   },
   session: {
     strategy: 'jwt',

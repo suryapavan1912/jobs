@@ -63,8 +63,8 @@ export default function LoginForm({
             })
           }
         } else {
-          // Force a full page refresh to update server components
-          window.location.href = '/'
+          router.push('/')
+          router.refresh()
         }
       } catch (error) {
         console.error('Login error:', error)
