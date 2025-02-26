@@ -9,13 +9,13 @@ import { getEmailTemplate, replaceTemplateVariables } from '@/utils/email';
 // Configure email transport with more detailed logs
 const transporter = nodemailer.createTransport({
   service: 'gmail',
-  secure: false, // Set to false for better debugging
+  port: Number(process.env.SMTP_PORT),
+  secure: false,
   auth: {
     user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASS,
   },
   debug: true, // Enable debug logs
-  logger: true // Enable logger
 });
 
 export async function POST(request: NextRequest) {
