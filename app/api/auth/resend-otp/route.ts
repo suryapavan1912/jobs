@@ -8,8 +8,7 @@ import { getEmailTemplate } from '@/utils/email';
 import { replaceTemplateVariables } from '@/utils/email';
 
 const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST,
-  port: Number(process.env.SMTP_PORT),
+  service: 'gmail',
   secure: false, // Set to false for better debugging
   auth: {
     user: process.env.SMTP_USER,
