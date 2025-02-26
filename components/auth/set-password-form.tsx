@@ -38,30 +38,57 @@ export default function SetupPasswordForm({
     }))
   }
 
-  const validatePassword = (password: string): boolean => {
-    // At least 8 characters, 1 uppercase, 1 lowercase, 1 number
-    const hasMinLength = password.length >= 8;
-    const hasUpperCase = /[A-Z]/.test(password);
-    const hasLowerCase = /[a-z]/.test(password);
-    const hasNumber = /\d/.test(password);
+  const validatePassword = (password: string): { isValid: boolean; errors: string[] } => {
+    const errors: string[] = [];
     
-    return hasMinLength && hasUpperCase && hasLowerCase && hasNumber;
+    // At least 8 characters
+    if (password.length < 8) {
+      errors.push("Password must be at least 8 characters long");
+    }
+    
+    // Contains uppercase
+    if (!/[A-Z]/.test(password)) {
+      errors.push("Password must contain at least one uppercase letter");
+    }
+    
+    // Contains lowercase
+    if (!/[a-z]/.test(password)) {
+      errors.push("Password must contain at least one lowercase letter");
+    }
+    
+    // Contains number
+    if (!/\d/.test(password)) {
+      errors.push("Password must contain at least one number");
+    }
+    
+    return {
+      isValid: errors.length === 0,
+      errors
+    };
   }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    if (!email || !token) return
+    if (!email || !token) {
+      toast.error("Invalid setup link", {
+        description: "Please check your email for the correct setup link or contact support."
+      });
+      return;
+    }
 
-    if (!validatePassword(formData.password)) {
+    const validation = validatePassword(formData.password);
+    if (!validation.isValid) {
       toast.error("Password requirements not met", {
-        description: "Password must be at least 8 characters long and contain uppercase, lowercase, and numbers"
+        description: validation.errors.join(". ")
       });
       return;
     }
 
     if (formData.password !== formData.confirmPassword) {
-      toast.error("Passwords don't match")
-      return
+      toast.error("Passwords don't match", {
+        description: "Please make sure both passwords are identical."
+      });
+      return;
     }
 
     setIsLoading(true)

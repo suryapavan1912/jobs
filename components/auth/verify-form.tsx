@@ -73,7 +73,19 @@ export default function VerifyForm({
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    if (!email) return
+    if (!email) {
+      toast.error("Missing email address", {
+        description: "Please go back to the signup page and try again."
+      })
+      return
+    }
+
+    if (formData.otp.length !== 6) {
+      toast.error("Invalid verification code", {
+        description: "Please enter the 6-digit code sent to your email."
+      })
+      return
+    }
 
     setIsLoading(true)
 

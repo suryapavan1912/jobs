@@ -33,8 +33,22 @@ export default function SignUpForm({
     }))
   }
 
+  const validateEmail = (email: string): boolean => {
+    // Basic email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  }
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    
+    if (!validateEmail(formData.email)) {
+      toast.error("Invalid email format", {
+        description: "Please enter a valid email address."
+      });
+      return;
+    }
+    
     setIsLoading(true)
 
     try {
