@@ -116,6 +116,7 @@ export default function SetupPasswordForm({
         description: "You can now login with your email and password",
       })
       router.push('/')
+      router.refresh()
     } catch (error) {
       console.error('Setup password error:', error)
       toast.error("Failed to set password", {

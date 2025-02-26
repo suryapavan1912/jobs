@@ -1,19 +1,21 @@
 import Link from 'next/link';
 import { 
-  Sheet, 
-  SheetContent, 
-  SheetTrigger, 
-  SheetHeader, 
-  SheetTitle,
-  SheetDescription 
-} from "@/components/ui/sheet";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator
+} from "@/components/ui/dropdown-menu";
 import { Button } from '@/components/ui/button';
-import { Menu } from 'lucide-react';
+import { Menu, User, Archive, Settings } from 'lucide-react';
+import SignOutButton from '@/components/navbar/sign-out-button';
+import Image from 'next/image';
 
-export function MobileNav() {
+export async function MobileNav({ session }: { session: any }) {
+
   return (
-    <Sheet>
-      <SheetTrigger asChild>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
         <Button 
           variant="ghost" 
           size="icon" 
@@ -22,39 +24,72 @@ export function MobileNav() {
         >
           <Menu className="h-6 w-6" />
         </Button>
-      </SheetTrigger>
-      <SheetContent 
-        side="right" 
-        className="w-64"
+      </DropdownMenuTrigger>
+      <DropdownMenuContent 
+        className="w-screen mt-4 rounded-none border-0"
+        sideOffset={0}
       >
-        <SheetHeader>
-          <SheetTitle className="text-left">Navigation Menu</SheetTitle>
-          <SheetDescription className="text-left">Access all site navigation links</SheetDescription>
-        </SheetHeader>
-        <nav 
-          className="flex flex-col space-y-4 mt-8"
-          aria-label="Site Navigation"
-        >
-          <Link 
-            href="/resume-templates" 
-            className="text-sm font-medium transition-colors hover:text-primary text-left"
-          >
-            Resume Templates
+
+        <DropdownMenuItem className="py-3 px-4">
+          <Link href="/resume-builder" className="w-full">
+            Resume Builder
           </Link>
-          <Link 
-            href="/interview-questions" 
-            className="text-sm font-medium transition-colors hover:text-primary text-left"
-          >
-            Interview Questions
-          </Link>
-          <Link 
-            href="/archives" 
-            className="text-sm font-medium transition-colors hover:text-primary text-left"
-          >
-            Archives
-          </Link>
-        </nav>
-      </SheetContent>
-    </Sheet>
+        </DropdownMenuItem>
+        
+        <DropdownMenuSeparator />
+        
+        {/* User Profile Section */}
+        {session ? (
+          <>
+            <DropdownMenuItem className="flex items-center gap-3 p-4">
+              <div className="h-10 w-10 rounded-full bg-purple-500 flex items-center justify-center text-white overflow-hidden">
+                {session.user?.image ? (
+                  <Image
+                    src={session.user.image}
+                    alt={session.user.name || 'Profile'}
+                    className="h-10 w-10 object-cover"
+                    width={50}
+                    height={50}
+                  />
+                ) : (
+                  session.user?.name?.charAt(0) || 'U'
+                )}
+              </div>
+              <div className="flex flex-col">
+                <span className="font-medium">{session.user?.name || 'User'}</span>
+                <span className="text-xs text-muted-foreground">{session.user?.email}</span>
+              </div>
+            </DropdownMenuItem>
+            <DropdownMenuItem className="py-3 px-4">
+              <Link href="/profile" className="w-full flex items-center gap-2"><User className="w-4 h-4" /><span>My profile</span></Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem className="py-3 px-4">
+              <Link href="/archives" className="w-full flex items-center gap-2"><Archive className="w-4 h-4" /><span>Archives</span></Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem className="py-3 px-4">
+              <Link href="/settings" className="w-full flex items-center gap-2"><Settings className="w-4 h-4" /><span>Settings</span></Link>
+            </DropdownMenuItem>
+            <SignOutButton />
+          </>
+        ) : (
+          <>
+            <DropdownMenuItem className="py-3 px-4">
+              <Link href="/auth/login" className="w-full">
+                <Button variant="outline" className="w-full">
+                    Login
+                </Button>
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem className="py-3 px-4">
+              <Link href="/auth/signup" className="w-full">
+                <Button className="w-full">
+                  Sign up
+                </Button>
+              </Link>
+            </DropdownMenuItem>
+          </>
+        )}
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }
