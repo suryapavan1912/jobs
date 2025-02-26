@@ -21,6 +21,7 @@ declare module 'next-auth' {
     userId: string;
     name?: string | null;
     email?: string | null;
+    image?: string | null;
   }
 }
 
@@ -51,21 +52,39 @@ export const authOptions: NextAuthOptions = {
         const user = await UserModel.findOne({ email: credentials.email });
         
         if (!user) {
-          throw new Error('No user found with this email');
+          throw new Error('Invalid email or password');
         }
 
-        const isPasswordValid = await bcrypt.compare(credentials.password, user.password as string);
-
-        if (!isPasswordValid) {
-          throw new Error('Invalid password');
+        if (!user.isVerified) {
+          throw new Error('Please verify your email before logging in');
         }
 
-        return {
-          id: user.userId,
-          userId: user.userId,
-          name: user.name,
-          email: user.email,
-        };
+        if (user.googleId && !user.password) {
+          throw new Error('This account does not have a password set. Please use Google login.');
+        }
+
+        try {
+          if (!user.password) {
+            throw new Error('Invalid email or password');
+          }
+
+          const isPasswordValid = await bcrypt.compare(credentials.password, user.password as string);
+
+          if (!isPasswordValid) {
+            throw new Error('Invalid email or password');
+          }
+
+          return {
+            id: user.userId,
+            userId: user.userId,
+            name: user.name,
+            email: user.email,
+            image: user.profilePicture || null,
+          };
+        } catch (error) {
+          console.error('Password validation error:', error);
+          throw new Error('Invalid email or password');
+        }
       }
     })
   ],
@@ -78,21 +97,41 @@ export const authOptions: NextAuthOptions = {
         await connectToDatabase();
         try {
           let dbUser = await UserModel.findOne({ email });
+          
           if (!dbUser) {
+            // Create a new user with Google authentication
             dbUser = await UserModel.create({
               userId: "u" + generateUniqueCustomId(),
               name,
               email,
               googleId: user.id,
-              profilePicture: image
+              profilePicture: image,
+              isVerified: true // Google-authenticated users are automatically verified
             });
-          } else if (!dbUser.googleId) {
-            dbUser.googleId = user.id;
+          } else {
+            // If user exists but is not verified, mark as verified
+            if (!dbUser.isVerified) {
+              dbUser.isVerified = true;
+            }
+            
+            // Update Google ID if not already set
+            if (!dbUser.googleId) {
+              dbUser.googleId = user.id;
+            }
+            
+            // Update profile picture if not already set
+            if (!dbUser.profilePicture && image) {
+              dbUser.profilePicture = image;
+            }
+            
+            // Ensure userId is set
             if (!dbUser.userId) {
               dbUser.userId = "u" + generateUniqueCustomId();
             }
+            
             await dbUser.save();
           }
+          
           user.userId = dbUser.userId;
           return true;
         } catch (error) {

@@ -54,13 +54,13 @@ export async function Navbar() {
                 <DropdownMenuTrigger asChild>
                   <Button 
                     variant="ghost" 
-                    className="relative h-9 w-9 rounded-full"
+                    className="relative h-6 w-6 p-2 rounded-full"
                   >
                     {session.user?.image ? (
                       <Image
                         src={session.user.image}
                         alt={session.user.name || 'Profile'}
-                        className="h-8 w-8 rounded-full"
+                        className="h-6 w-6 rounded-full"
                         fill
                       />
                     ) : (

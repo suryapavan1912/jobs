@@ -49,12 +49,22 @@ export default function LoginForm({
         })
   
         if (result?.error) {
-          toast.error("Authentication failed", {
-            description: result.error,
-          })
+          if (result.error.includes('does not have a password set')) {
+            toast.error("Google Account Detected", {
+              description: "This email is registered with Google. Please use the Google login option below.",
+            })
+          } else if (result.error.includes('verify your email')) {
+            toast.error("Email Not Verified", {
+              description: "Please check your email and verify your account before logging in.",
+            })
+          } else {
+            toast.error("Authentication failed", {
+              description: result.error,
+            })
+          }
         } else {
-          router.refresh()
-          router.push('/')
+          // Force a full page refresh to update server components
+          window.location.href = '/'
         }
       } catch (error) {
         console.error('Login error:', error)
