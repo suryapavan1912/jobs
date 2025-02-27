@@ -11,7 +11,18 @@ import { Menu, User, Archive, Settings } from 'lucide-react';
 import SignOutButton from '@/components/navbar/sign-out-button';
 import Image from 'next/image';
 
-export async function MobileNav({ session }: { session: any }) {
+// Define a specific type for the session
+interface SessionUser {
+  name?: string;
+  email?: string;
+  image?: string;
+}
+
+interface SessionProps {
+  user?: SessionUser;
+}
+
+export async function MobileNav({ session }: { session: SessionProps | null }) {
 
   return (
     <DropdownMenu>

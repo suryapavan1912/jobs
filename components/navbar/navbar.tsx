@@ -9,6 +9,16 @@ import { MobileNav } from '@/components/navbar/mobile-nav';
 import Image from 'next/image';
 import { User, Archive, Settings } from 'lucide-react';
 
+interface SessionUser {
+  name?: string;
+  email?: string;
+  image?: string;
+}
+
+interface SessionProps {
+  user?: SessionUser;
+}
+
 export async function Navbar() {
   const session = await getServerSession(authOptions);
 
@@ -114,7 +124,7 @@ export async function Navbar() {
 
           {/* Mobile Menu - Only visible on mobile */}
           <div className="md:hidden">
-            <MobileNav session={session} />
+            <MobileNav session={session as SessionProps | null} />
           </div>
         </div>
       </div>
