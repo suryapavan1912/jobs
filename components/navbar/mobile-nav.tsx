@@ -85,18 +85,18 @@ export async function MobileNav({ session }: { session: SessionProps | null }) {
         ) : (
           <>
             <DropdownMenuItem className="py-3 px-4">
-              <Link href="/auth/login" className="w-full">
-                <Button variant="outline" className="w-full">
+              <div className="flex flex-row gap-2 w-full">
+                <Link href="/auth/login" className="w-full flex-1">
+                  <Button variant="outline" className="w-full">
                     Login
-                </Button>
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem className="py-3 px-4">
-              <Link href="/auth/signup" className="w-full">
-                <Button className="w-full">
-                  Sign up
-                </Button>
-              </Link>
+                  </Button>
+                </Link>
+                <Link href="/auth/signup" className="w-full flex-1">
+                  <Button className="w-full">
+                    Sign up
+                  </Button>
+                </Link>
+              </div>
             </DropdownMenuItem>
           </>
         )}
